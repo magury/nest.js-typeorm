@@ -4,7 +4,7 @@ export function isChinese(value: string) {
 
 }
 
-export const LOCAL_URL = 'http://localhost:3011'
+export const LOCAL_URL = 'http://localhost:5000'
 export const SELECT_REPORT = 'select * from report'
 export const SELECT_PATIENCE: String = "select * from patience"
 export const Result = (code: Number, result = null) => {
@@ -13,7 +13,7 @@ export const Result = (code: Number, result = null) => {
         result
     }
 }
-export const LOCALHOST: String = 'http://localhost:3011'
+export const LOCALHOST: String = 'http://localhost:5000'
 export const DELETE_REPORT = 'delete  from report'
 export function uuid() {
     let d = new Date().getTime();

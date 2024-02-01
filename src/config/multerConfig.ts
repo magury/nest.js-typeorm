@@ -1,12 +1,13 @@
 import {extname} from 'path';
 import {diskStorage} from 'multer';
 import e from "express";
+import * as path from "path";
 
 export const multerConfig = {
     limits: {
         fileSize: 1024 * 1024 * 5
     },
-    fileFilter: (req:e.Request, file: Express.Multer.File, callback: (error: Error | null, acceptFile: boolean) => void) => {
+    fileFilter: (req: e.Request, file: Express.Multer.File, callback: (error: Error | null, acceptFile: boolean) => void) => {
         //中文乱码
         file.originalname = Buffer.from(file.originalname, "latin1").toString(
             "utf8"
@@ -19,7 +20,7 @@ export const multerConfig = {
         return callback(null, false);
     },
     storage: diskStorage({
-        destination: './public/unloads',
+        destination: path.join(__dirname, '../', './public/unloads'),
         filename(req: e.Request, file: Express.Multer.File, callback: (error: (Error | null), filename: string) => void) {
             return callback(null, `${file.originalname}`)
         }
@@ -29,7 +30,7 @@ export const reportConfig = {
     limits: {
         fileSize: 1024 * 1024 * 5
     },
-    fileFilter: (req:e.Request, file: Express.Multer.File, callback: (error: Error | null, acceptFile: boolean) => void) => {
+    fileFilter: (req: e.Request, file: Express.Multer.File, callback: (error: Error | null, acceptFile: boolean) => void) => {
         //中文乱码
         file.originalname = Buffer.from(file.originalname, "latin1").toString(
             "utf8"
@@ -42,7 +43,7 @@ export const reportConfig = {
         return callback(null, false);
     },
     storage: diskStorage({
-        destination: './public/reported',
+        destination: path.join(__dirname, '../', './public/reported'),
         filename(req: e.Request, file: Express.Multer.File, callback: (error: (Error | null), filename: string) => void) {
             return callback(null, `${file.originalname}`)
         }

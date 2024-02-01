@@ -7,13 +7,16 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.enableCors()//跨域
     // 新增代码，设置静态资源路径与访问前缀
-    app.use("/avatar",express.static(join('./public/unloads')))
-    app.use("/report",express.static(join('./public/reported')))
-    app.use("/hospital",express.static(join('./public/json')))
+    app.use("/avatar",express.static(join(__dirname,'../','./public/unloads')))
+    app.use("/report",express.static(join(__dirname,'../','./public/reported')))
+    app.use("/hospital",express.static(join(__dirname,'../','./public/json')))
     // 注册cookie
     app.use(cookieParser());
-    await app.listen(3011);
+    await app.listen(5000);
 
 }
 
-bootstrap().then(r => console.log('服务器已开启：http://localhost:3011'));
+bootstrap().then(r =>{
+    console.log(__dirname)
+    console.log('服务器已开启：http://localhost:5000')
+});

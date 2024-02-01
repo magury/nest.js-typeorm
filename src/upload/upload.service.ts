@@ -18,7 +18,7 @@ export class UploadService {
 
     async create(file: Express.Multer.File, query: User) {
         if (file) {
-            const url = `http://localhost:3011/avatar/${file.filename}`
+            const url = `http://localhost:5000/avatar/${file.filename}`
             //  const res = await execute<Update>(`update user set avatarPath=? where username=? and password=?`, [url, query.username, query.password])
             const res = await this.usersRepository.update({
                 username: query.username,
