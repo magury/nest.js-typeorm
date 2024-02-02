@@ -1,2 +1,2 @@
 # Nest-Ts-Mysql
-js写的后端
+CRUD数据库使用的是typeorm库
