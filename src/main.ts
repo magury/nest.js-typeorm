@@ -1,5 +1,5 @@
 import {NestFactory} from '@nestjs/core';
-import {AppModule} from './app.module';
+import {AppModule} from './module/app.module';
 import * as express from 'express';
 import {join} from 'node:path'
 import * as cookieParser from 'cookie-parser';
@@ -12,11 +12,11 @@ async function bootstrap() {
     app.use("/hospital",express.static(join(__dirname,'../','./public/json')))
     // 注册cookie
     app.use(cookieParser());
-    await app.listen(5000);
+    await app.listen(3011);
 
 }
 
 bootstrap().then(r =>{
     console.log(__dirname)
-    console.log('服务器已开启：http://localhost:5000')
+    console.log('服务器已开启：http://localhost:3011')
 });
