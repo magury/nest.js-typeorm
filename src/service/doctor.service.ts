@@ -1,5 +1,4 @@
 import {Injectable} from "@nestjs/common";
-import {execute} from "../common";
 import {Result, uuid} from "../common/comon.service";
 import {InjectRepository} from "@nestjs/typeorm";
 import {UserEntity} from "../utility/entities/user.entity";
@@ -19,7 +18,6 @@ export class DoctorService {
     async post_fallback({userId, hospitalId, errors}) {
 
         let update = await this.fallbacksRepository.insert({hospitalId, dealStatus: 0, errors, userId, uuid: uuid()})
-        console.log(update.raw.affectedRows)
         if (update) {
             return Result(200)
         } else {
@@ -28,14 +26,15 @@ export class DoctorService {
     }
 
     async get_fallback() {
-        let sql = await this.fallbacksRepository.query('select a.*,b.author,c.hospitalName from fallback as a,user as b,addition as c where a.userId=b.userId and a.hospitalId=b.hospitalId and b.hospitalId=c.hospitalId')
-
+        let sql = await this.fallbacksRepository
+            .query('select a.*,b.author,c.hospitalName ' +
+                'from fallback as a,user as b,addition as c ' +
+                'where a.userId=b.userId and a.hospitalId=b.hospitalId and b.hospitalId=c.hospitalId')
         return Result(200, sql)
     }
 
     async put_fallback({userId, hospitalId, uuid}) {
         let update =
-            // await this.fallbacksRepository.createQueryBuilder().update().set({dealStatus:1}).where({hospitalId,uuid}).execute()
             await this.fallbacksRepository.update({hospitalId, uuid}, {dealStatus: 1})
         if (update.affected)
             return Result(200)
@@ -44,7 +43,6 @@ export class DoctorService {
 
     async deleteDoctors(body) {
         const {hospitalId, username} = body
-
         const update = await this.usersRepository.delete({username, hospitalId})
         if (update.affected) {
             const users = await this.usersRepository.find()

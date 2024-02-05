@@ -14,7 +14,6 @@ import {HospitalInterceptor} from "../utility/interceptor/hospital.interceptor";
 import {UploadService} from "../service/upload.service";
 import {HospitalService} from "../service/hospital.service";
 import {publicJsonPipes} from "../utility/pipe/hospital.pipes";
-import {HospitalGuard} from "../utility/gurad/hospital.guard";
 import {HttpExceptionFilter} from "../utility/exception/hospital.HttpExceptionFilter";
 import {ResponseInterceptor} from "../utility/interceptor/user.interceptor";
 
@@ -52,7 +51,6 @@ export class HospitalController {
     }
 
     @UseFilters(new HttpExceptionFilter())
-    @UseGuards(new HospitalGuard())
     @Put('content')
     /*已处理*/putTopicContent(@Body("userId") userId: string, @Body("topic") topic: string, @Body("description") description: string, @Body("content") content: string) {
         return this.hospitalService.putTopicContent(userId, topic, description, content)

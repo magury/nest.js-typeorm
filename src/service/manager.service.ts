@@ -5,7 +5,6 @@ import {Result, uuid} from "../common/comon.service";
 import {InjectRepository} from "@nestjs/typeorm";
 import {AdminEntity} from "../utility/entities/admin.entity";
 import {Repository} from "typeorm";
-import {execute} from "../common";
 import {AdditionEntity} from "../utility/entities/addition.entity";
 import {FallbackEntity} from "../utility/entities/fallback.entity";
 

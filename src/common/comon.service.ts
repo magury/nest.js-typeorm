@@ -5,18 +5,12 @@ export function isChinese(value: string) {
     return !re.test(value);
 
 }
-
-export const LOCAL_URL = 'http://134.175.81.248:5000'
-export const SELECT_REPORT = 'select * from report'
-export const SELECT_PATIENCE: String = "select * from patience"
 export const Result = (code: Number, result = null) => {
     return {
         code,
         result
     }
 }
-export const LOCALHOST: String = 'http://134.175.81.248:5000'
-export const DELETE_REPORT = 'delete  from report'
 export function uuid() {
     let d = new Date().getTime();
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {

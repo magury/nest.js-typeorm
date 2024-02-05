@@ -1,9 +1,6 @@
 import {Injectable, Query} from '@nestjs/common';
-import {execute} from '../common'
-import {Response} from "express";
-import {DELETE_REPORT, originPath, Result, server, uuid} from "../common/comon.service";
+import {originPath, Result, server, uuid} from "../common/comon.service";
 import {writeFile, readFile, readdir, stat} from 'fs/promises';
-import * as path from "path";
 import {join} from 'path'
 import {InjectRepository} from "@nestjs/typeorm";
 import {Like, Not, Repository} from "typeorm";
@@ -98,7 +95,7 @@ export class UserService {
 
     async postTalking(body: any) {
         const res = await readdir(join(originPath, 'public/experience'))
-        const length = res.length
+        const {length} = res
         const previous = (length - 1).toString().padStart(4, '0')
         const current = length.toString().padStart(4, '0')
         const data: any =
@@ -112,7 +109,7 @@ export class UserService {
         if (res.length == 0) {
             // 新建文件
             data.fileName = `exp${previous}.json`
-            await writeFile(path.join(originPath, `public/experience/exp${previous}.json`), JSON.stringify([data]))
+            await writeFile(join(originPath, `public/experience/exp${previous}.json`), JSON.stringify([data]))
         } else {
             const {size} = await stat(join(originPath, 'public/experience', res[length - 1]))
             if (size > 10000000) {
@@ -145,8 +142,7 @@ export class UserService {
     }
 
     async postComment(body: experience) {
-        const {fileName, index: _} = body
-        const index = parseInt(_)
+        const {fileName, index} = body
         const json: experience[] = JSON.parse(await readFile(join(originPath, 'public', 'experience', fileName), 'utf-8'))
         json[index].like = body.like
         json[index].dislike = body.dislike
@@ -171,12 +167,13 @@ export class UserService {
                     username, password, userId,
                     avatarPath: null,
                     depart, author,
-                    sciencePath: null,
+                    sciencePath: `${server}/hospital/${userId}.json`,
                     hospitalId
                 })
             if (update.raw.affectedRows) {
                 let res =
-                    await this.usersRepository.query(`select a.hospitalName,b.* from addition a,user b where a.hospitalId=b.hospitalId`)
+                    await this.usersRepository.query(`select a.hospitalName,b.* from addition a,user b 
+                        where a.hospitalId=b.hospitalId`)
                 return Result(200, res)
             } else {
                 // 系统错误
@@ -186,12 +183,14 @@ export class UserService {
     }
 
     async getDoctors() {
-        let res: User[] = await this.usersRepository.query('select a.*,b.hospitalName from user a,addition b where a.hospitalId=b.hospitalId')
+        let res: User[] = await this.usersRepository
+            .query('select a.*,b.hospitalName from user a,addition b ' +
+                'where a.hospitalId=b.hospitalId')
         return Result(200, res)
     }
 
     async deleteComments({fileName, index}) {
-        const json = JSON.parse(await readFile(`public/experience/${fileName}`, 'utf-8'))
+        const json = JSON.parse(await readFile(join(originPath,`public/experience/${fileName}`), 'utf-8'))
         const res = json.filter((item) => item.index != index)
         await writeFile(join(originPath,`public/experience/${fileName}`), JSON.stringify(res))
         return Result(200)

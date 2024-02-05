@@ -2,6 +2,7 @@ import {extname} from 'path';
 import {diskStorage} from 'multer';
 import e from "express";
 import * as path from "path";
+import {originPath} from "../../common/comon.service";
 
 export const multerConfig = {
     limits: {
@@ -20,7 +21,7 @@ export const multerConfig = {
         return callback(null, false);
     },
     storage: diskStorage({
-        destination: path.join(__dirname, '../', './public/unloads'),
+        destination: path.join(originPath, './public/unloads'),
         filename(req: e.Request, file: Express.Multer.File, callback: (error: (Error | null), filename: string) => void) {
             return callback(null, `${file.originalname}`)
         }
@@ -43,7 +44,7 @@ export const reportConfig = {
         return callback(null, false);
     },
     storage: diskStorage({
-        destination: path.join(__dirname, '../', './public/reported'),
+        destination: path.join(originPath,  './public/reported'),
         filename(req: e.Request, file: Express.Multer.File, callback: (error: (Error | null), filename: string) => void) {
             return callback(null, `${file.originalname}`)
         }

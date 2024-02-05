@@ -1,6 +1,5 @@
 import {Injectable} from "@nestjs/common";
-import {LOCAL_URL, originPath, Result, server} from "../common/comon.service";
-import {execute} from "../common";
+import {originPath, Result, server} from "../common/comon.service";
 import * as fs from "fs";
 import {writeFile, readFile} from 'fs/promises';
 import {stringify} from "ts-jest";
@@ -10,6 +9,7 @@ import {Like, Not, Repository} from "typeorm";
 import {AdditionEntity} from "../utility/entities/addition.entity";
 import {UserEntity} from "../utility/entities/user.entity";
 import * as path from "path";
+import {join} from "path";
 
 @Injectable()
 export class HospitalService {
@@ -26,10 +26,7 @@ export class HospitalService {
         res.map((item) => {
             item.infoJsonPath = `${server}/hospital/${item.infoJsonPath}`
         })
-        return {
-            statusCode: 200,
-            result: res
-        }
+        return Result(200, res)
     }
 
     async getJson(hospitalName: string) {
@@ -56,11 +53,10 @@ export class HospitalService {
     }
 
     async putPublicJson(body: any) {
-        console.log(body)
         const {onlyKey} = body
         if (onlyKey == "")
             return Result(200, null)
-        let unique = await fetch(`${LOCAL_URL}/hospital/${body['fileName']}.json`).then((res) => res.json())
+        let unique = await readFile(join(originPath, 'public', 'json', `${body['fileName']}.json`))
         for (let i = 0; i < unique.length; i++) {
             for (let j = 0; j < body['data'].length; j++) {
                 if (unique[i]['onlyKey'] == body['data'][j]['onlyKey'])
@@ -68,17 +64,17 @@ export class HospitalService {
             }
         }
         let data = JSON.stringify(unique, undefined, 4);
-        await writeFile(`public/json/${body['fileName']}.json`, data)
+        await writeFile(join(originPath,`public/json/${body['fileName']}.json`),data)
         return Result(200, null)
     }
 
     async putTopicContent(userId: string, title: string, description: string, paragraph: string) {
 
         let user = await this.usersRepository.findOne({where: {userId}})
-        if (!fs.existsSync(`public/json/${userId}.json`)) {
-            fs.writeFileSync(`public/json/${userId}.json`, '[]')
+        if (!fs.existsSync(join(originPath,`public/json/${userId}.json`))) {
+            fs.writeFileSync(join(originPath,`public/json/${userId}.json`), '[]')
         }
-        const unique = JSON.parse(await readFile(`public/json/${userId}.json`, 'utf-8'))
+        const unique = JSON.parse(await readFile(join(originPath,`public/json/${userId}.json`), 'utf-8'))
         const current = new Date()
         unique.push({
             onlyKey: `${userId}_${(unique.length + 1).toString().padStart(4, '0')}`,
@@ -91,9 +87,9 @@ export class HospitalService {
             like: 0, dislike: 0, paragraph: paragraph.split(/\r\n|\n\r|[\n\r]/), comment: []
 
         })
-        await writeFile(`public/json/${userId}.json`, JSON.stringify(unique))
+        await writeFile(join(originPath,`public/json/${userId}.json`), JSON.stringify(unique))
         return Result(200, {
-            path: `${LOCAL_URL}/hospital/${userId}.json`
+            path: `${server}/hospital/${userId}.json`
         })
     }
 
@@ -115,15 +111,15 @@ export class HospitalService {
 
     async deleteJson(body) {
         const {userId, onlyKey} = body
-        const json = JSON.parse(await readFile(`public/json/${userId}.json`, 'utf-8'))
+        const json = JSON.parse(await readFile(join(originPath,`public/json/${userId}.json`), 'utf-8'))
         const data = json.filter((item) => item.onlyKey != onlyKey)
-        await writeFile(`public/json/${userId}.json`, JSON.stringify(data))
-        return Result(200, {a: 1})
+        await writeFile(join(originPath,`public/json/${userId}.json`), JSON.stringify(data))
+        return Result(200)
     }
 
     async postContent({onlyKey, nickname, comment}) {
         const fileName = onlyKey.split('_')[0]
-        const jsons = JSON.parse(await readFile(`public/json/${fileName}.json`, 'utf-8'))
+        const jsons = JSON.parse(await readFile(join(originPath,`public/json/${fileName}.json`), 'utf-8'))
         const date = new Date()
         for (let json of jsons) {
             if (json.onlyKey == onlyKey) {
@@ -132,7 +128,7 @@ export class HospitalService {
                     nickname, comment,
                     commentDate: `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
                 })
-                await writeFile(`public/json/${fileName}.json`, JSON.stringify(jsons))
+                await writeFile(join(originPath,`public/json/${fileName}.json`), JSON.stringify(jsons))
                 return Result(200, json.comments)
             }
 

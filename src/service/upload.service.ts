@@ -1,9 +1,6 @@
-import {Inject, Injectable, Res} from '@nestjs/common';
-import {execute} from "../common";
-import * as fs from 'fs';
-import {LOCAL_URL, LOCALHOST, Result, SELECT_PATIENCE, SELECT_REPORT, server, uuid} from "../common/comon.service";
+import { Injectable} from '@nestjs/common';
+import { Result, server, uuid} from "../common/comon.service";
 import {InjectRepository} from "@nestjs/typeorm";
-import {PatientEntity} from "../utility/entities/patient.entity";
 import {Between, Like, Repository} from "typeorm";
 import {ReportEntity} from "../utility/entities/report.entity";
 import {UserEntity} from "../utility/entities/user.entity";
@@ -18,8 +15,7 @@ export class UploadService {
 
     async create(file: Express.Multer.File, query: User) {
         if (file) {
-            const url = file.filename
-            //  const res = await execute<Update>(`update user set avatarPath=? where username=? and password=?`, [url, query.username, query.password])
+            const url = `${server}/avatar/${file.filename}`
             const res = await this.usersRepository.update({
                 username: query.username,
                 password: query.password
@@ -27,7 +23,7 @@ export class UploadService {
                 avatarPath: url
             })
             if (res.affected)
-                return Result(200, {url: `${server}/avatar/${url}`})
+                return Result(200, {url})
             else {
                 return Result(500, {errors: '请稍后上传'})
             }
@@ -45,7 +41,6 @@ export class UploadService {
         const result: ReportEntity[] = await this.reportsRepository.findBy({hospitalName: body.hospitalName})
         result.map((item, index) => {
             item.tags = JSON.parse(<string>item.tags)
-            item.reportPath = `${server}/report/${item.reportPath}`
         })
         return Result(200, result);
     }
@@ -58,7 +53,6 @@ export class UploadService {
         })
         result.map((item) => {
             item.tags = JSON.parse(<string>item.tags)
-            item.reportPath = `${server}/report/${item.reportPath}`
         })
         return Result(200, result)
     }
@@ -77,9 +71,6 @@ export class UploadService {
     async getParamReport(hospitalName: string) {
         const res = await this.reportsRepository.findBy({
             hospitalName
-        })
-        res.map((item) => {
-            item.reportPath = `${server}/report/${item.reportPath}`
         })
         return Result(200, res)
     }

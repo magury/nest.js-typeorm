@@ -3,13 +3,14 @@ import {AppModule} from './module/app.module';
 import * as express from 'express';
 import {join} from 'node:path'
 import * as cookieParser from 'cookie-parser';
+import {originPath} from "./common/comon.service";
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.enableCors()//跨域
     // 新增代码，设置静态资源路径与访问前缀
-    app.use("/avatar",express.static(join(__dirname,'../','./public/unloads')))
-    app.use("/report",express.static(join(__dirname,'../','./public/reported')))
-    app.use("/hospital",express.static(join(__dirname,'../','./public/json')))
+    app.use("/avatar",express.static(join(originPath,'./public/unloads')))
+    app.use("/report",express.static(join(originPath,'./public/reported')))
+    app.use("/hospital",express.static(join(originPath,'./public/json')))
     // 注册cookie
     app.use(cookieParser());
     await app.listen(3011);

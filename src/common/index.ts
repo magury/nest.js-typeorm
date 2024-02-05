@@ -9,7 +9,7 @@ const conn = mysql.createPool({
     database: 'suse'
 })
 
-export function execute<T>(sql: string, option?: any): Promise<T> {
+function execute<T>(sql: string, option?: any): Promise<T> {
     return new Promise((resolve, reject) => {
         conn.query(sql, option, (err, result) => {
             if (err) {
