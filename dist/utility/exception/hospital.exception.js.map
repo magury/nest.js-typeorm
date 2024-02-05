@@ -1,0 +1,1 @@
+{"version":3,"file":"hospital.exception.js","sourceRoot":"","sources":["../../../src/utility/exception/hospital.exception.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,2CAAqE;AAG9D,IAAM,kBAAkB,GAAxB,MAAM,kBAAmB,SAAQ,sBAAa;IACjD;QACI,KAAK,CAAC,WAAW,EAAE,mBAAU,CAAC,SAAS,CAAC,CAAC;IAC7C,CAAC;CACJ,CAAA;AAJY,gDAAkB;6BAAlB,kBAAkB;IAD9B,IAAA,mBAAU,GAAE;;GACA,kBAAkB,CAI9B"}
